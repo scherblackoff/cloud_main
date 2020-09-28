@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<GridPane alignment="center" hgap="10" prefHeight="340.0" prefWidth="460.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <AnchorPane opacity="0.9" prefHeight="420" prefWidth="460.0">
+         <children>
+            <ListView fx:id="listViewServer" layoutX="10.0" layoutY="212.0" prefHeight="119.0" prefWidth="440.0">
+               <effect>
+                  <InnerShadow>
+                     <color>
+                        <Color red="0.17642591893672943" green="0.14972221851348877" blue="0.3499999940395355" />
+                     </color>
+                  </InnerShadow>
+               </effect></ListView>
+            <ListView fx:id="listViewClient" layoutX="10.0" layoutY="43.0" prefHeight="119.0" prefWidth="440.0">
+               <effect>
+                  <InnerShadow>
+                     <color>
+                        <Color red="0.16527777910232544" green="0.3499999940395355" blue="0.22377315163612366" />
+                     </color>
+                  </InnerShadow>
+               </effect></ListView>
+            <Button onAction="#upload" layoutX="8.0" layoutY="170.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="213.0" text="UPLOAD" textFill="#384171">
+               <effect>
+                  <InnerShadow choke="0.29" height="10.0" radius="4.5" width="10.0">
+                     <color>
+                        <Color red="0.15142787992954254" green="0.15142787992954254" blue="0.50789475440979" />
+                     </color>
+                  </InnerShadow>
+               </effect>
+            </Button>
+            <Button layoutX="235.0" layoutY="170.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="214.0" text="DOWNLOAD" textFill="#327127">
+               <effect>
+                  <InnerShadow choke="0.15" height="10.0" radius="4.5" width="10.0">
+                     <color>
+                        <Color red="0.16555067896842957" green="0.4236842095851898" blue="0.16555067896842957" />
+                     </color>
+                  </InnerShadow>
+               </effect></Button>
+            <MenuBar layoutY="2.0" prefHeight="2.0" prefWidth="460.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+               <effect>
+                  <InnerShadow height="10.0" radius="2.0" width="0.0" />
+               </effect>
+            </MenuBar>
+         </children>
+         <effect>
+            <Blend />
+         </effect></AnchorPane>
+   </children>
+</GridPane>
