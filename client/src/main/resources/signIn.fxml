@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="174.0" prefWidth="281.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SignInController">
+    <effect>
+        <InnerShadow choke="0.51" height="10.0" radius="4.5" width="10.0">
+            <color>
+                <Color red="0.6410087943077087" green="0.8763157725334167" blue="0.8449414968490601" />
+            </color>
+        </InnerShadow>
+    </effect>
+    <TextField fx:id="loginField" layoutX="39.0" layoutY="28.0" prefHeight="26.0" prefWidth="204.0" promptText="login">
+        <effect>
+            <InnerShadow choke="0.02" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.5759259462356567" green="0.9081172943115234" blue="1.0" />
+                </color>
+            </InnerShadow>
+        </effect>
+    </TextField>
+    <Button layoutX="144.0" layoutY="99.0" mnemonicParsing="false" onAction="#signIn" prefHeight="34.0" prefWidth="100.0" text="Sign in" textFill="#485e5f">
+        <effect>
+            <InnerShadow choke="0.1" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.7265740633010864" green="0.9164860844612122" blue="0.949999988079071" />
+                </color>
+            </InnerShadow>
+        </effect>
+    </Button>
+    <Button fx:id="undoButton" blendMode="SRC_ATOP" layoutX="39.0" layoutY="99.0" mnemonicParsing="false" onAction="#undo" prefHeight="34.0" prefWidth="100.0" text="Undo" textFill="#617777">
+        <effect>
+            <InnerShadow choke="0.1" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.6350926160812378" green="0.9290061593055725" blue="0.949999988079071" />
+                </color>
+            </InnerShadow>
+        </effect>
+    </Button>
+   <PasswordField fx:id="passwordField" layoutX="39.0" layoutY="61.0" prefHeight="26.0" prefWidth="204.0" promptText="password">
+      <effect>
+         <InnerShadow choke="0.1" height="10.0" radius="4.5" width="10.0">
+            <color>
+               <Color red="0.6462963223457336" green="0.9351543188095093" blue="1.0" />
+            </color>
+         </InnerShadow>
+      </effect>
+   </PasswordField>
+</AnchorPane>
