@@ -65,8 +65,6 @@ public class DatabaseHandler extends Config {
         try {
             PreparedStatement prSt = getDbConnection().prepareStatement(select);
             byte[] password = CipherHandler.doEncrypt(user.getPassword());
-            System.out.println(Arrays.toString(password));
-            System.out.println(password);
             prSt.setString(1, user.getLogin());
             prSt.setString(2, Arrays.toString(password));
             resultSet = prSt.executeQuery();
