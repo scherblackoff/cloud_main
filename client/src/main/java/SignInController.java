@@ -3,15 +3,14 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.IOException;
 
 public class SignInController {
     public Button undoButton;
     public TextField loginField;
     public TextField passwordField;
     private Controller controller;
-    private final User user = new User();
+    private User user = new User();
 
     public void undo(ActionEvent actionEvent) {
         undoButton.getScene().getWindow().hide();
@@ -23,35 +22,30 @@ public class SignInController {
         if (!loginText.equals("") && !passwordText.equals("")) {
             connectUser(loginText, passwordText);
         } else {
-            shake();
+            playAnimation();
         }
     }
 
-    private void connectUser(String loginText, String passwordText){
-        DatabaseHandler dbHandler = new DatabaseHandler();
+    private void connectUser(String loginText, String passwordText) {
         user.setLogin(loginText);
         user.setPassword(passwordText);
-        ResultSet resultSet = dbHandler.getUser(user);
-
-        int counter = 0;
+        user.setStatus(User.Status.SIGN_IN);
+        controller.getNetwork().sendMessage(user);
         try {
-            while (resultSet.next()) {
-                counter++;
-            }
-        } catch (SQLException e) {
+            user = (User) controller.getNetwork().readMessage();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        if (counter >= 1) {
-            System.out.println("Success");
+        if (user.getStatus().equals(User.Status.USER_IS_REGISTERED)) {
             controller.init(user);
             loginField.getScene().getWindow().hide();
         } else {
-            shake();
+            playAnimation();
         }
     }
 
-    public void shake() {
+    public void playAnimation() {
         Shake userLoginAnim = new Shake(loginField);
         Shake userPassAnim = new Shake(passwordField);
         userLoginAnim.playAnim();

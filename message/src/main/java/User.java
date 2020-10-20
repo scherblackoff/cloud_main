@@ -1,12 +1,19 @@
 import java.io.File;
 
-public class User {
+public class User extends AbstractMessage{
+
+    public enum  Status {
+        SIGN_UP,
+        SIGN_IN,
+        USER_IS_REGISTERED
+    }
 
     private String login;
     private String password;
 
 
     private String path;
+    private Status status;
 
     public User(String login, String password) {
         this.login = login;
@@ -16,6 +23,14 @@ public class User {
 
     public User() {
 
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     public String getLogin() {

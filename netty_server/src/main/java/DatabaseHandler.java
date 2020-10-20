@@ -1,22 +1,21 @@
-
-import jdk.nashorn.internal.objects.annotations.Where;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
-public class DatabaseHandler extends Configs{
+public class DatabaseHandler extends Config {
     Connection dbConnection;
 
     public Connection getDbConnection() throws ClassNotFoundException, SQLException{
         String connectionString = "jdbc:mysql://" + dbHost + ":" +
                 dbPort + "/" + dbName +
-                "?useUnicode=true&serverTimezone=UTC&useSSL=false";
+                "?useUnicode=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&useSSL=false";
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         dbConnection = DriverManager.getConnection(connectionString, dbUser, dbPass);
@@ -30,10 +29,14 @@ public class DatabaseHandler extends Configs{
                 Const.CLIENTS_PASSWORD + ")" + "VALUES(?,?)";
         try {
             PreparedStatement prSt = getDbConnection().prepareStatement(insert);
+            byte[] password = CipherHandler.doEncrypt(user.getPassword());
             prSt.setString(1, user.getLogin());
-            prSt.setString(2, user.getPassword());
+            prSt.setString(2, Arrays.toString(password));
             prSt.executeUpdate();
-        }catch (SQLException | ClassNotFoundException e){
+        }catch (SQLException | ClassNotFoundException |
+                NoSuchPaddingException | NoSuchAlgorithmException |
+                InvalidKeyException | IllegalBlockSizeException |
+                BadPaddingException e){
             e.printStackTrace();
         }
     }
@@ -57,15 +60,20 @@ public class DatabaseHandler extends Configs{
 
     public ResultSet getUser(User user){
         ResultSet resultSet = null;
-
         String select = "SELECT * FROM " + Const.CLIENTS_TABLE + " WHERE " + Const.CLIENTS_LOGIN + "= ? AND "
                 + Const.CLIENTS_PASSWORD + " = ?";
         try {
             PreparedStatement prSt = getDbConnection().prepareStatement(select);
+            byte[] password = CipherHandler.doEncrypt(user.getPassword());
+            System.out.println(Arrays.toString(password));
+            System.out.println(password);
             prSt.setString(1, user.getLogin());
-            prSt.setString(2, user.getPassword());
+            prSt.setString(2, Arrays.toString(password));
             resultSet = prSt.executeQuery();
-        }catch (SQLException | ClassNotFoundException e){
+        }catch (SQLException | ClassNotFoundException |
+                BadPaddingException | IllegalBlockSizeException |
+                InvalidKeyException | NoSuchAlgorithmException |
+                NoSuchPaddingException e){
             e.printStackTrace();
         }
 
@@ -73,12 +81,7 @@ public class DatabaseHandler extends Configs{
     }
 
 
-    /*Данный метод собирался использовать для предоставления файлов принадлежащих именно авторизированному пользователю
-    но возникла проблема с передачей информации о user из SignInController в Controller в связи с чем делать это не
-    удалось */
-
-
-    public List<String> getServerFiles(User user){
+    public List<String> getServerFiles(String login){
         ResultSet resultSet = null;
         List<String> serverFiles = new ArrayList<>();
         String select = "SELECT " + Const.FILES_TABLE + "." + Const.FILES_NAME_FILE + " FROM " + Const.FILES_TABLE +
@@ -87,7 +90,7 @@ public class DatabaseHandler extends Configs{
 
         try{
             PreparedStatement prSt = getDbConnection().prepareStatement(select);
-            prSt.setString(1, user.getLogin());
+            prSt.setString(1, login);
             resultSet = prSt.executeQuery();
             while (resultSet.next()){
                 serverFiles.add(resultSet.getString(1));
@@ -101,14 +104,14 @@ public class DatabaseHandler extends Configs{
 
     //Метод получения id пользователя что бы сортировать файлы в директории сервера для каждого пользователя
 
-    public String getUserId(User user){
+    public String getUserId(String login){
         int id = 0;
         ResultSet resultSet = null;
         String select = "SELECT " + Const.CLIENTS_TABLE + "." + Const.CLIENTS_ID_CLIENT + " FROM " + Const.CLIENTS_TABLE +
                 " WHERE " + Const.CLIENTS_LOGIN + " = ?";
         try{
             PreparedStatement prSt = getDbConnection().prepareStatement(select);
-            prSt.setString(1, user.getLogin());
+            prSt.setString(1, login);
             resultSet = prSt.executeQuery();
             while (resultSet.next()){
                 id = resultSet.getInt(1);
@@ -121,16 +124,45 @@ public class DatabaseHandler extends Configs{
 
     //Метода добавления файла в бд
 
-    public void uploadFileDb(String fileName, User user){
+    public void uploadFileDb(String fileName, String login){
         String insert = "INSERT INTO " + Const.FILES_TABLE + "(" + Const.FILES_NAME_FILE + "," +
                 Const.FILES_ID_CLIENT + ")" + "VALUES(?,?)";
         try {
             PreparedStatement prSt = getDbConnection().prepareStatement(insert);
             prSt.setString(1, fileName);
-            prSt.setString(2, getUserId(user));
+            prSt.setString(2, getUserId(login));
             prSt.executeUpdate();
         }catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
         }
+    }
+
+    public void deleteFile(FileToDelete fileToDelete){
+        String delete = "DELETE FROM " + Const.FILES_TABLE + " WHERE " + Const.FILES_ID_FILE + " = ?";
+        try {
+            PreparedStatement prSt = getDbConnection().prepareStatement(delete);
+            prSt.setString(1, getFileID(fileToDelete.getNameFile()));
+            prSt.executeUpdate();
+        }catch (SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    private String getFileID(String fileName){
+        int id = 0;
+        ResultSet resultSet = null;
+        String select = "SELECT " + Const.FILES_TABLE + "." + Const.FILES_ID_FILE + " FROM " + Const.FILES_TABLE +
+                " WHERE " + Const.FILES_NAME_FILE + " = ?";
+        try{
+            PreparedStatement prSt = getDbConnection().prepareStatement(select);
+            prSt.setString(1, fileName);
+            resultSet = prSt.executeQuery();
+            while (resultSet.next()){
+                id = resultSet.getInt(1);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return String.valueOf(id);
     }
 }

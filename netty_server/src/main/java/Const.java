@@ -9,4 +9,5 @@ public class Const {
     public static final String FILES_TABLE = "files";
     public static final String FILES_NAME_FILE = "name_file";
     public static final String FILES_ID_CLIENT = "id_client";
+    public static final String FILES_ID_FILE = "id_file";
 }

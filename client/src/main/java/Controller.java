@@ -1,15 +1,19 @@
 
+import Animation.Shake;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.net.Socket;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class Controller implements Initializable {
@@ -20,129 +24,129 @@ public class Controller implements Initializable {
 
     public List<String> filesServer = new ArrayList<>();
     public List<String> filesClient = new ArrayList<>();
-    private DataOutputStream os;
-    private DataInputStream is;
+    public TextField searchField;
+    public Button selectButton;
+    public MenuItem exitItem;
+    public Menu sortButton;
+    public Button uploadButton;
+    public Button deleteButton;
+    public Button downloadButton;
     private String path;
     private User user;
-    private DatabaseHandler dbHandler = new DatabaseHandler();
+    private final Network network = new Network();
 
+    public Network getNetwork() {
+        return network;
+    }
 
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            Socket socket = new Socket("localhost", 8189);
-            is = new DataInputStream(socket.getInputStream());
-            os = new DataOutputStream(socket.getOutputStream());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //Пока клиент не вошел, он не может увидитеть кнопку сортировки и кнопку выхода
+        sortButton.setVisible(false);
+        exitItem.setVisible(false);
+        network.start();
     }
 
     public void upload(ActionEvent actionEvent) {
         String file = listViewClient.getSelectionModel().getSelectedItem();
-        if (!filesServer.contains(file)) {
+        if (!filesServer.contains(file) && listViewClient.getSelectionModel().getSelectedItem() != null) {
             try {
-                filesServer.add(file);
-                os.writeUTF(file);
-                File current = new File(path + "/" + file);
-                os.writeLong(current.length());
-                FileInputStream fis = new FileInputStream(current);
-                int tmp;
-                byte[] buffer = new byte[8192];
-                while ((tmp = fis.read(buffer)) != -1) {
-                    os.write(buffer, 0, tmp);
-                }
-                dbHandler.uploadFileDb(file, user);
-                listViewServer.getItems().add(file);
+                FileToUpload fileToUpload = new FileToUpload(Paths.get(path + "/" + file));
+                fileToUpload.setUserLogin(user.getLogin());
+                network.sendMessage(fileToUpload);
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                Platform.runLater(() -> listViewServer.getItems().add(file));
+                filesServer.add(file);
             }
-            System.out.println(file);
-        } else {
-            System.out.println("File already exist");
+        }else{
+            Shake uploadAnim = new Shake(uploadButton);
+            uploadAnim.playAnim();
         }
     }
 
     public void download(ActionEvent actionEvent) {
         String file = listViewServer.getSelectionModel().getSelectedItem();
-        if (!filesClient.contains(file) && filesServer.contains(file)) {
+        if (!filesClient.contains(file) && filesServer.contains(file) &&
+                listViewServer.getSelectionModel().getSelectedItem() != null) {
             try {
-                os.writeUTF("./doDownload/" + file);
-                os.flush();
-                File fileFromServer = new File(path + "/" + file);
-                FileOutputStream fos = new FileOutputStream(fileFromServer);
-                long fileLength = is.readLong();
-                byte[] buffer = new byte[8192];
-                System.out.println("Wait " + fileLength + " bytes");
-                for (int i = 0; i < (fileLength + 8191) / 8192; i++) {
-                    int cnt = is.read(buffer);
-                    fos.write(buffer, 0, cnt);
-                }
-                System.out.println("File " + "[" + file + "]" + " saved");
-                fos.close();
+                FileToDownload fileToDownload = new FileToDownload(file);
+                fileToDownload.setNameUser(user.getLogin());
+                network.sendMessage(fileToDownload);
+                FileToUpload fileToUpload = (FileToUpload) network.readMessage();
+                Files.write(Paths.get(path + "/" + fileToUpload.getFileName()),
+                        fileToUpload.getFileData(), StandardOpenOption.CREATE);
                 listViewClient.getItems().add(file);
                 filesClient.add(file);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else{
+            Shake downloadAnim = new Shake(downloadButton);
+            downloadAnim.playAnim();
         }
     }
 
-    public void update(ActionEvent actionEvent) {
-        if (!listViewServer.getItems().isEmpty() || !listViewClient.getItems().isEmpty()) {
-            listViewServer.getItems().clear();
-            listViewClient.getItems().clear();
-            refresh();
-            System.out.println(user.getPassword());
-        }
-        System.out.println(path);
-    }
-
-
-
-    /*Метод для получения файлов с сервера если убрать личные файлы пользователей
-
-    private List<String> getServerFiles() throws IOException {
-        os.writeUTF("./getFilesList");
-        os.flush();
-        int listSize = is.readInt();
-        for (int i = 0; i < listSize; i++) {
-            String fileName = is.readUTF();
-            if (!filesServer.contains(fileName)) {
-                filesServer.add(fileName);
-            }
-        }
-        return filesServer;
-    }*/
 
     public void refresh() {
         File file = new File(path);
         File[] files = file.listFiles();
         if (files != null) {
-            for (File currentFile : files) {
-                String name = currentFile.getName();
-                /*Long size = currentFile.length();
-                int nameLength = name.length();*/
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(name);
-
-                /*Не понимаю почему при выводе разное расстояние от имени файла до его размера
-
-               for (int i = 0; i < (70 - nameLength); i++) {
-                    stringBuilder.append(" ");
-                }
-                stringBuilder.append(size + "byte");*/
-                listViewClient.getItems().add(String.valueOf(stringBuilder));
-                if (!filesClient.contains(name)) {
-                    filesClient.add(name);
+            if (filesClient.size() != files.length) {
+                updateClient(files);
+            } else {
+                for (File fileClient :
+                        files) {
+                    if (!filesClient.contains(fileClient.getName())) {
+                        updateClient(files);
+                        break;
+                    }
                 }
             }
-        }/*try and catch нужен если захотим закачивать названия с сервера
-        try {*/
-            listViewServer.getItems().addAll(dbHandler.getServerFiles(user));
-            filesServer.addAll(dbHandler.getServerFiles(user));
-        /*} catch (IOException e) {
+        }
+
+        List<String> filesFromServer = getFilesServer();
+        if (filesFromServer != null) {
+            if (filesServer.size() != filesFromServer.size()) {
+                updateServer(filesFromServer);
+            } else {
+                for (String fileFromServer :
+                        filesFromServer) {
+                    if (!filesServer.contains(fileFromServer)) {
+                        updateServer(filesFromServer);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public List<String> getFilesServer(){
+        ServerFiles serverFiles = new ServerFiles(user.getLogin());
+        network.sendMessage(serverFiles);
+        try {
+            serverFiles = (ServerFiles) network.readMessage();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        }*/
+        }
+        return serverFiles.getServerFiles();
+    }
+
+
+    public void updateClient(File[] files) {
+        filesClient.clear();
+        listViewClient.getItems().clear();
+        for (File fileForListClient :
+                files) {
+            filesClient.add(fileForListClient.getName());
+            listViewClient.getItems().add(fileForListClient.getName());
+        }
+    }
+
+    public void updateServer(List<String> filesFromServer) {
+        listViewServer.getItems().clear();
+        listViewServer.getItems().addAll(filesFromServer);
+        filesServer.addAll(filesFromServer);
     }
 
     public void sortWords(ActionEvent actionEvent) {
@@ -194,10 +198,53 @@ public class Controller implements Initializable {
         stage.showAndWait();
     }
 
-    public void init(User user){
-        System.out.println(user.getLogin());
+    public void init(User user) {
         this.user = user;
         this.path = "client/src/main/resources/" + user.getLogin() + "_dir";
+        exitItem.setVisible(true);
+        sortButton.setVisible(true);
         refresh();
     }
+
+
+    public void exit(ActionEvent actionEvent) {
+        listViewServer.getItems().clear();
+        listViewClient.getItems().clear();
+        filesServer.clear();
+        filesClient.clear();
+        sortButton.setVisible(false);
+        exitItem.setVisible(false);
+    }
+
+    public void select(ActionEvent actionEvent) {
+        if (listViewClient.getItems().contains(searchField.getText())
+                || (listViewServer.getItems().contains(searchField.getText()))) {
+            listViewClient.getSelectionModel().select(searchField.getText());
+            listViewServer.getSelectionModel().select(searchField.getText());
+        } else {
+            Shake searchAnim = new Shake(searchField);
+            searchAnim.playAnim();
+        }
+    }
+
+    public void delete(ActionEvent actionEvent) {
+        if(listViewServer.getSelectionModel().getSelectedItem() != null) {
+            String file = listViewServer.getSelectionModel().getSelectedItem();
+            FileToDelete fileToDelete = new FileToDelete(file);
+            fileToDelete.setUserName(user.getLogin());
+            network.sendMessage(fileToDelete);
+            filesServer.remove(file);
+            listViewServer.getItems().remove(file);
+        }else{
+            Shake deleteAnim = new Shake(deleteButton);
+            deleteAnim.playAnim();
+        }
+    }
+
+    public void update(ActionEvent actionEvent) {
+        if (!listViewServer.getItems().isEmpty() || !listViewClient.getItems().isEmpty()) {
+            Platform.runLater(this::refresh);
+        }
+    }
 }
+

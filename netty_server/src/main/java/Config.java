@@ -1,4 +1,4 @@
-public class Configs {
+public class Config {
     //Класс для удобного доступа к переменым для подключение к бд
     protected String dbHost = "localhost";
     protected String dbPort = "3306";

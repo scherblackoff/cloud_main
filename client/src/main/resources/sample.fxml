@@ -6,70 +6,122 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="center" hgap="10" prefHeight="340.0" prefWidth="460.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<GridPane alignment="CENTER" hgap="10" style="-fx-background-color: #E0FFFF;" vgap="10"
+          xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="Controller">
     <columnConstraints>
-        <ColumnConstraints />
+        <ColumnConstraints/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints />
+        <RowConstraints maxHeight="14.0" minHeight="5.0" prefHeight="14.0"/>
+        <RowConstraints maxHeight="27.0" minHeight="18.0" prefHeight="18.0"/>
+        <RowConstraints/>
+        <RowConstraints/>
     </rowConstraints>
-    <AnchorPane opacity="0.9" prefHeight="420" prefWidth="460.0">
+    <effect>
+        <Blend/>
+    </effect>
+    <AnchorPane opacity="0.9" prefHeight="319.0" prefWidth="460.0" style="-fx-background-color: #E0FFFF;"
+                GridPane.rowIndex="2">
         <effect>
-            <Blend />
+            <Blend/>
         </effect>
-        <ListView fx:id="listViewServer" layoutX="10.0" layoutY="212.0" prefHeight="119.0" prefWidth="440.0">
+        <ListView fx:id="listViewServer" layoutX="10.0" layoutY="201.0" prefHeight="123.0" prefWidth="440.0"
+                  style="-fx-background-color: #FFFAFA;">
             <effect>
                 <InnerShadow>
                     <color>
-                        <Color red="0.17642591893672943" green="0.14972221851348877" blue="0.3499999940395355" />
+                        <Color red="0.46666666865348816" green="0.6039215922355652" blue="0.8745098114013672"/>
                     </color>
                 </InnerShadow>
             </effect>
         </ListView>
-        <ListView fx:id="listViewClient" layoutX="10.0" layoutY="43.0" prefHeight="119.0" prefWidth="440.0">
+        <ListView fx:id="listViewClient" layoutX="10.0" layoutY="29.0" prefHeight="123.0" prefWidth="440.0"
+                  style="-fx-background-color: #FFFAFA;">
             <effect>
                 <InnerShadow>
                     <color>
-                        <Color red="0.16527777910232544" green="0.3499999940395355" blue="0.22377315163612366" />
+                        <Color red="0.46666666865348816" green="0.6039215922355652" blue="0.8745098114013672"/>
                     </color>
                 </InnerShadow>
             </effect>
         </ListView>
-        <Button layoutX="8.0" layoutY="170.0" mnemonicParsing="false" onAction="#upload" prefHeight="26.0" prefWidth="213.0" text="UPLOAD" textFill="#384171">
-            <effect>
-                <InnerShadow choke="0.29" height="10.0" radius="4.5" width="10.0">
-                    <color>
-                        <Color red="0.15142787992954254" green="0.15142787992954254" blue="0.50789475440979" />
-                    </color>
-                </InnerShadow>
-            </effect>
-        </Button>
-        <Button layoutX="235.0" layoutY="170.0" mnemonicParsing="false" onAction="#download" prefHeight="26.0" prefWidth="214.0" text="DOWNLOAD" textFill="#327127">
+        <Button fx:id="uploadButton" layoutX="10.0" layoutY="159.0" mnemonicParsing="false" onAction="#upload"
+                prefHeight="26.0" prefWidth="213.0" style="-fx-background-color: #F0F8FF;" text="UPLOAD"
+                textFill="#5580b2">
             <effect>
                 <InnerShadow choke="0.15" height="10.0" radius="4.5" width="10.0">
                     <color>
-                        <Color red="0.16555067896842957" green="0.4236842095851898" blue="0.16555067896842957" />
+                        <Color red="0.3333333432674408" green="0.501960813999176" blue="0.6980392336845398"/>
                     </color>
                 </InnerShadow>
             </effect>
         </Button>
-        <MenuBar layoutY="2.0" prefHeight="2.0" prefWidth="460.0">
+        <Button fx:id="downloadButton" layoutX="235.0" layoutY="159.0" mnemonicParsing="false" onAction="#download"
+                prefHeight="26.0" prefWidth="213.0" style="-fx-background-color: #F0F8FF;" text="DOWNLOAD"
+                textFill="#5580b2">
             <effect>
-                <InnerShadow height="10.0" radius="2.0" width="0.0" />
+                <InnerShadow choke="0.15" height="10.0" radius="4.5" width="10.0">
+                    <color>
+                        <Color red="0.3333333432674408" green="0.501960813999176" blue="0.6980392336845398"/>
+                    </color>
+                </InnerShadow>
             </effect>
-            <Menu mnemonicParsing="false" text="Authorization">
-                <MenuItem mnemonicParsing="false" onAction="#signIn" text="Sign in" />
-                <MenuItem mnemonicParsing="false" onAction="#signUp" text="Sign up" />
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-                <MenuItem mnemonicParsing="false" onAction="#update" text="Update" />
-            </Menu>
-            <Menu mnemonicParsing="false" text="Sort">
-                <MenuItem mnemonicParsing="false" onAction="#sortWords" text="Words" />
-                <MenuItem mnemonicParsing="false" text="Data" />
-            </Menu>
-        </MenuBar>
-        <Text fill="#b4e2aa" layoutX="219.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="YOU" wrappingWidth="31.13671875" />
-        <Text fill="#c5d8f8" layoutX="213.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLOUD" wrappingWidth="56.78318786621094" />
+        </Button>
+        <Text fill="#aab9d5" layoutX="219.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="YOU"
+              wrappingWidth="31.13671875"/>
+        <Text fill="#aab9d5" layoutX="207.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLOUD"
+              wrappingWidth="56.78318786621094"/>
+        <TextField fx:id="searchField" layoutX="10.0" layoutY="-15.0" prefHeight="26.0" prefWidth="214.0"
+                   promptText="search" style="-fx-background-color: #FFFAFA;">
+            <effect>
+                <InnerShadow choke="0.36" height="10.0" radius="4.5" width="10.0">
+                    <color>
+                        <Color red="0.46666666865348816" green="0.6039215922355652" blue="0.8745098114013672"/>
+
+                    </color>
+                </InnerShadow>
+            </effect>
+        </TextField>
+        <Button fx:id="selectButton" layoutX="230.0" layoutY="-15.0" mnemonicParsing="false" onAction="#select"
+                prefHeight="26.0" prefWidth="106.0" style="-fx-background-color: #F0FFF0;" text="Select"
+                textFill="#73bf73">
+            <effect>
+                <InnerShadow choke="0.36" height="10.0" radius="4.5" width="10.0">
+                    <color>
+                        <Color red="0.5607843399047852" green="0.9176470637321472" blue="0.5607843399047852"/>
+                    </color>
+                </InnerShadow>
+            </effect>
+        </Button>
+        <Button fx:id="deleteButton" layoutX="342.0" layoutY="-15.0" mnemonicParsing="false" onAction="#delete"
+                prefHeight="26.0" prefWidth="106.0" style="-fx-background-color: #FFE4E1;" text="Delete"
+                textFill="#da7d7d">
+            <effect>
+                <InnerShadow choke="0.1" height="10.0" radius="4.5" width="10.0">
+                    <color>
+                        <Color red="1.0" green="0.5811111330986023" blue="0.5166666507720947"/>
+                    </color>
+                </InnerShadow>
+            </effect>
+        </Button>
     </AnchorPane>
+    <MenuBar style="-fx-background-color: #F0F8FF;">
+        <effect>
+            <InnerShadow choke="0.1" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.46666666865348816" green="0.6039215922355652" blue="0.8745098114013672"/>
+                </color>
+            </InnerShadow>
+        </effect>
+        <Menu mnemonicParsing="false" text="Authorization">
+            <MenuItem mnemonicParsing="false" onAction="#signIn" text="Sign in"/>
+            <MenuItem mnemonicParsing="false" onAction="#signUp" text="Sign up"/>
+            <MenuItem fx:id="exitItem" mnemonicParsing="false" onAction="#exit" text="Exit"/>
+        </Menu>
+        <Menu fx:id="sortButton" mnemonicParsing="false" text="Edit">
+            <MenuItem mnemonicParsing="false" onAction="#sortWords" text="Sort"/>
+            <MenuItem mnemonicParsing="false" onAction="#update" text="Update"/>
+        </Menu>
+    </MenuBar>
 </GridPane>
