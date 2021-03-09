@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="174.0" prefWidth="276.0" style="-fx-background-color: #E0FFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SignInController">
+    <effect>
+        <InnerShadow choke="0.51" height="10.0" radius="4.5" width="10.0">
+            <color>
+                <Color red="0.6410087943077087" green="0.8763157725334167" blue="0.8449414968490601" />
+            </color>
+        </InnerShadow>
+    </effect>
+    <TextField fx:id="loginField" layoutX="45.0" layoutY="47.0" prefHeight="26.0" prefWidth="204.0" promptText="login">
+        <effect>
+            <InnerShadow choke="0.02" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.5764706134796143" green="0.9098039269447327" blue="1.0" />
+                </color>
+            </InnerShadow>
+        </effect>
+    </TextField>
+    <Button layoutX="147.0" layoutY="116.0" mnemonicParsing="false" onAction="#signIn" prefHeight="34.0" prefWidth="100.0" style="-fx-background-color: #F0F8FF;" text="Sign in" textFill="#485e5f">
+        <effect>
+            <InnerShadow choke="0.15" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.3333333432674408" green="0.501960813999176" blue="0.6980392336845398" />
+                </color>
+            </InnerShadow>
+        </effect>
+    </Button>
+    <Button fx:id="undoButton" blendMode="SRC_ATOP" layoutX="45.0" layoutY="116.0" mnemonicParsing="false" onAction="#undo" prefHeight="34.0" prefWidth="100.0" style="-fx-background-color: #F0F8FF;" text="Undo" textFill="#617777">
+        <effect>
+            <InnerShadow choke="0.15" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.3333333432674408" green="0.501960813999176" blue="0.6980392336845398" />
+                </color>
+            </InnerShadow>
+        </effect>
+    </Button>
+    <PasswordField fx:id="passwordField" layoutX="45.0" layoutY="80.0" prefHeight="26.0" prefWidth="204.0" promptText="password">
+        <effect>
+            <InnerShadow choke="0.1" height="10.0" radius="4.5" width="10.0">
+                <color>
+                    <Color red="0.6462963223457336" green="0.9351543188095093" blue="1.0" />
+                </color>
+            </InnerShadow>
+        </effect>
+    </PasswordField>
+    <Text fill="#5580b2" layoutX="107.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign in">
+      <font>
+         <Font name="Yu Gothic Light" size="27.0" />
+      </font></Text>
+</AnchorPane>
